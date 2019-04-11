@@ -1,0 +1,43 @@
+
+<!--index.wxml-->
+<view bindtap="bindViewTap" class="container">
+  <view class="userinfo">
+    <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
+    <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+  </view>
+  <view class="table">
+    <view class="tr bg-w">
+      <view class="th">日期</view>
+      <view class="th">沪深300</view>
+      <view class="th ">中证500</view>
+    </view>
+    <view class="tr bg-g">
+      <view class="td" a>{{dateFourWeeksAgo}}</view>
+      <view class="td">{{hs300FourWeeksAgo}}</view>
+      <view class="td">{{zs300FourWeeksAgo}}</view>
+    </view>
+    <view class="tr">
+      <view class="td">{{dateCurrent}}</view>
+      <view class="td">{{hs300Current}}</view>
+      <view class="td">{{zs300Current}}</view>
+    </view>
+    <view class="tr bg-g">
+      <view class="td">绝对值</view>
+      <view class="td">{{hs300Compare}}</view>
+      <view class="td">{{zs300Compare}}</view>
+    </view>
+    <view class="tr">
+      <view class="td">百分比</view>
+      <view class="td">{{hs300ComparePercent}}%</view>
+      <view class="td">{{zs300ComparePercent}}%</view>
+
+      <view class="td">{{(hs300Current - hs300FourWeeksAgo)/100.0}}</view>
+    </view>
+    <view class="tr bg-g">
+      <view class="td">{{dateRealtime}}</view>
+      <view class="td">{{hs300Realtime}}</view>
+      <view class="td">{{zs300Realtime}}</view>
+        <view class="td">{{zs300Current - zs300FourWeeksAgo}}</view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,142 @@
+//index.js
+//获取应用实例
+var util = require('../../utils/util.js');
+var XRegExp = require('../../lib/xregexp/xregexp');
+
+var app = getApp()
+Page({
+  data: {
+    userInfo: {},
+    dateFourWeeksAgo: 0.0,
+    hs300FourWeeksAgo: 0.0,
+    zs300FourWeeksAgo: 0.0,
+    dateCurrent: 0.0,
+    hs300Current: 0.0,
+    zs300Current: 0.0,
+    hs300Compare: 0.0,
+    zs300Compare: 0.0,
+  },
+  //事件处理函数
+  bindViewTap: function () {
+    wx.navigateTo({
+      url: '../logs/logs'
+    })
+  },
+  onLoad: function () {
+    console.log('onLoad')
+    var _dateFourWeeksAgo 
+    var _hs300FourWeeksAgo
+    var _zs300FourWeeksAgo
+    var _dateCurrent
+    var _hs300Current
+    var _zs300Current
+    var _hs300Compare
+    var _zs300Compare
+
+    var that = this
+    //调用应用实例的方法获取全局数据
+    app.getUserInfo(function (userInfo) {
+      //更新数据
+      that.setData({
+        userInfo: userInfo,
+      })
+    })
+
+    //中小300n-4周数据
+    wx.request({
+      url: "https://img1.money.126.net/data/hs/kline/week/history/2017/1399008.json",
+      header: {
+        // "Content-Type":"application/json"
+      },
+      success: function (res) {
+        var length = res.data.data.length
+        //console.log(res.data.data[length-5])  
+        _zs300FourWeeksAgo = parseFloat(res.data.data[length - 5][2]).toFixed(3)        
+        that.setData({
+          dateFourWeeksAgo: res.data.data[length - 5][0],
+          zs300FourWeeksAgo: parseFloat(res.data.data[length - 5][2]).toFixed(3),
+        });
+      },
+      fail: function (err) {
+        console.log(err)
+      }
+    })
+    console.log('_zs300FourWeeksAgo')
+    console.log(_zs300FourWeeksAgo)
+
+    //沪深300n-4周数据
+    wx.request({
+      url: "https://img1.money.126.net/data/hs/kline/week/history/2017/1399300.json",
+      header: {
+        // "Content-Type":"application/json"
+      },
+      success: function (res) {
+        var length = res.data.data.length
+        //console.log(res.data.data[length-5])            
+        that.setData({
+          hs300FourWeeksAgo: parseFloat(res.data.data[length - 5][2]).toFixed(3),
+        });
+      },
+      fail: function (err) {
+        console.log(err)
+      }
+    })
+
+
+    //实时
+    wx.request({
+      url: "https://api.money.126.net/data/feed/1399008,1399300",
+      header: {
+        // "Content-Type":"application/json"
+      },
+      success: function (res) {
+        //console.log(res.data)
+        var patternRealtime = XRegExp('_ntes_quote_callback\\((.*)\\);');
+        var match = XRegExp.exec(res.data, patternRealtime);
+        //console.log(match[1]); 
+        var realtime = JSON.parse(match[1]);
+
+        console.log(realtime['1399008'].price);
+        that.setData({
+          zs300Current: parseFloat(realtime['1399008'].price).toFixed(3),
+          hs300Current: parseFloat(realtime['1399300'].price).toFixed(3),
+          dateCurrent: util.formatDay(new Date(realtime['1399300'].update)),
+        });
+
+      },
+      fail: function (err) {
+        console.log(err)
+      }
+
+    })
+
+    that.data.hs300Compare = that.data.hs300Current - that.data.hs300FourWeeksAgo
+    that.data.zs300Compare = that.data.zs300Current - that.data.zs300FourWeeksAgo
+
+  },
+  onPullDownRefresh: function () {
+    console.log('onPullDownRefresh')
+    wx.stopPullDownRefresh()
+
+  },
+  onReady: function () {
+    console.log('onReady');
+  },
+  onShow: function () {
+    console.log('onShow');
+  },
+  onHide: function () {
+    console.log('onHide');
+  },
+  onUnload: function () {
+    console.log('onUnload');
+  },
+
+  onReachBottom: function () {
+    console.log('onReachBottom');
+  },
+  onShareAppMessage: function () {
+    console.log('onShareAppMessage');
+  },
+
+})
