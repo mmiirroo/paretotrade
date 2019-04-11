@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset=utf-8>
+        <meta name=viewport content="width=device-width,initial-scale=1,user-scalable=no">
+        <link type="text/css" rel="stylesheet"  href="static/css/my.css" />
+        <title>基智二八</title>
+    </head>
+    <body>
+        <div class=logo>
+            <img src=static/image/pareto.png alt="">
+        </div>
+        <h2>基智二八</h2>
+        <hr>
+        <table border="1" width="95%" cellpadding="2" cellspacing="1" align="center"  >
+            <tr  onclick="rowClick(this)">
+              <td>日期</td>
+              <td>沪深300(002987)</td>
+              <td>中小300(002903)</td>
+            </tr>
+            <tr  onclick="rowClick(this)">
+              <td id="dateFourWeeksAgo">400</td>
+              <td id="hs300FourWeeksAgo">500</td>
+              <td id="zs300FourWeeksAgo">600</td>
+            </tr>
+            <tr  onclick="rowClick(this)">
+              <td id="dateCurrent">400</td>
+              <td id="hs300Current">500</td>
+              <td id="zs300Current">600</td>
+            </tr>
+            <tr  onclick="rowClick(this)">
+              <td id="">比较</td>
+              <td id="hs300Compare">500</td>
+              <td id="zs300Compare">600</td>
+            </tr>
+            <tr  onclick="rowClick(this)">
+              <td id="">百分比</td>
+              <td id="">500</td>
+              <td id="">600</td>
+            </tr><!--
+            <tr>
+              <td id="dateRealtime">实时</td>
+              <td id="hs300Realtime">500</td>
+              <td id="zs300Realtime">600</td>
+            </tr>-->
+        </table>
+
+        <script src="js/jquery-3.0.0.min.js"></script>
+        <script type="text/javascript">  
+            function rowClick (e) {
+              alert('you clicked row');
+            }
+            $(function(){    
+                $.ajax({    
+                    //请求方式    
+                    type:"GET",    
+                    crossDomain: true,
+                    //文件位置    
+                    url:"https://gupiao.baidu.com/api/stocks/stockweekbar?from=pc&os_ver=2&cuid=xxx&vv=100&format=json&stock_code=sh000300&count=5",  
+                    //返回数据格式为json,也可以是其他格式如    
+                    dataType: "jsonp",    
+                    //请求成功后要执行的函数，拼接html    
+                    success: function(res){
+                        console.log(res);
+                        var indexFourWeeksAgo = parseFloat(res.data.mashData[4].kline.close).toFixed(3)
+                        var indexCurrent = parseFloat(res.data.mashData[0].kline.close).toFixed(3)
+                        console.log(indexFourWeeksAgo)
+                        console.log(indexCurrent)
+
+                    }    
+                });    
+            });    
+        </script>
+    </body>
+</html>
